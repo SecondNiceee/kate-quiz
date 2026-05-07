@@ -66,23 +66,39 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Опросник</h1>
-          <p className="text-gray-600">Пожалуйста, ответьте на все вопросы</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        {/* Hero Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            Опросник
+          </h1>
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+            Пожалуйста, ответьте на все вопросы ниже. Ваши ответы помогут нам лучше понять ваши потребности.
+          </p>
         </div>
 
         {loading ? (
-          <Card className="p-12 text-center">
-            <p className="text-gray-600">Загрузка вопросов...</p>
+          <Card className="p-12 text-center shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+            <div className="animate-pulse">
+              <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-slate-600">Загрузка вопросов...</p>
+            </div>
           </Card>
         ) : questions.length === 0 ? (
-          <Card className="p-12 text-center">
-            <p className="text-gray-600 mb-2">Вопросов еще не добавлено</p>
-            <p className="text-sm text-gray-500">
-              Перейдите в <a href="/new-admin" className="text-purple-600 hover:underline">админ-панель</a>, чтобы добавить вопросы
+          <Card className="p-12 text-center shadow-lg border-0 bg-white/70 backdrop-blur-sm">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <p className="text-slate-600 mb-2 text-lg">Вопросов еще не добавлено</p>
+            <p className="text-sm text-slate-500">
+              Перейдите в{' '}
+              <a href="/new-admin" className="text-indigo-600 hover:text-indigo-700 underline underline-offset-2">
+                админ-панель
+              </a>
+              , чтобы добавить вопросы
             </p>
           </Card>
         ) : (
@@ -94,20 +110,20 @@ export default function QuizPage() {
             />
 
             {/* Submit Button */}
-            <div className="mt-8 flex gap-4">
+            <div className="mt-10 flex justify-center">
               <Button
                 onClick={handleSubmit}
                 size="lg"
-                className="bg-purple-600 hover:bg-purple-700 text-white"
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-3 text-lg shadow-lg shadow-indigo-500/30 transition-all hover:shadow-xl hover:shadow-indigo-500/40"
               >
                 Отправить ответы
               </Button>
             </div>
 
             {submitted && (
-              <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded-lg text-green-800">
-                <p className="font-semibold">✓ Спасибо за прохождение опросника!</p>
-                <p className="text-sm mt-1">Ваши ответы были получены.</p>
+              <div className="mt-6 p-5 bg-green-50 border border-green-200 rounded-xl text-green-800 text-center">
+                <p className="font-semibold text-lg">Спасибо за прохождение опросника!</p>
+                <p className="text-sm mt-1 text-green-600">Ваши ответы были получены.</p>
               </div>
             )}
           </>
