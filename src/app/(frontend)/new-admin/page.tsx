@@ -177,30 +177,26 @@ export default function AdminPage() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-1">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-gray-600 hover:bg-gray-100 h-7 w-7 p-0"
+                    <button
+                      className="w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleMoveQuestion(question.id, 'up')}
                       disabled={index === 0}
                     >
                       <ChevronUp size={18} />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-gray-600 hover:bg-gray-100 h-7 w-7 p-0"
+                    </button>
+                    <button
+                      className="w-8 h-8 rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleMoveQuestion(question.id, 'down')}
                       disabled={index === questions.length - 1}
                     >
                       <ChevronDown size={18} />
-                    </Button>
+                    </button>
                   </div>
                   <div className="flex gap-2">
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-blue-600 hover:bg-blue-50"
+                      className="text-blue-600 hover:bg-blue-50 cursor-pointer"
                       onClick={() => handleEditQuestion(question)}
                     >
                       <Edit2 size={18} />
