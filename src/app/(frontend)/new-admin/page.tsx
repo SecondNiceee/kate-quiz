@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { QuestionForm } from '@/components/quiz/QuestionForm'
-import { Plus, Trash2, Edit2 } from 'lucide-react'
+import { Plus, Trash2, Edit2, ChevronUp, ChevronDown } from 'lucide-react'
 
 type Question = {
   id: number
@@ -58,6 +58,22 @@ export default function AdminPage() {
       setQuestions(questions.filter(q => q.id !== id))
     } catch (error) {
       console.error('Error deleting question:', error)
+    }
+  }
+
+  const handleMoveQuestion = async (id: number, direction: 'up' | 'down') => {
+    try {
+      const response = await fetch('/api/questions/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, direction })
+      })
+      
+      if (response.ok) {
+        fetchQuestions()
+      }
+    } catch (error) {
+      console.error('Error moving question:', error)
     }
   }
 
@@ -160,6 +176,26 @@ export default function AdminPage() {
                   </div>
 
                   {/* Actions */}
+                  <div className="flex flex-col gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-gray-600 hover:bg-gray-100 h-7 w-7 p-0"
+                      onClick={() => handleMoveQuestion(question.id, 'up')}
+                      disabled={index === 0}
+                    >
+                      <ChevronUp size={18} />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-gray-600 hover:bg-gray-100 h-7 w-7 p-0"
+                      onClick={() => handleMoveQuestion(question.id, 'down')}
+                      disabled={index === questions.length - 1}
+                    >
+                      <ChevronDown size={18} />
+                    </Button>
+                  </div>
                   <div className="flex gap-2">
                     <Button
                       size="sm"
