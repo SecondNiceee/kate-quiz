@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     `
 
     // Find current question index in the sorted array
-    const currentIndex = questions.findIndex((q: { id: number }) => q.id === id)
+    const currentIndex = questions.findIndex((q) => q.id === id)
     
     if (currentIndex === -1) {
       return NextResponse.json({ error: 'Question not found' }, { status: 404 })
