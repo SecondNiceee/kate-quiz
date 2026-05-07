@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { QuestionForm } from '@/components/quiz/QuestionForm'
-import { Plus, Trash2, Edit2, ChevronUp, ChevronDown } from 'lucide-react'
+import { Plus, Trash2, Edit2, ChevronUp, ChevronDown, Save } from 'lucide-react'
 
 type Question = {
   id: number
@@ -21,6 +21,9 @@ export default function AdminPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null)
   const [loading, setLoading] = useState(true)
+  const [hasOrderChanges, setHasOrderChanges] = useState(false)
+  const [savingOrder, setSavingOrder] = useState(false)
+  const originalOrderRef = useRef<number[]>([])
 
   useEffect(() => {
     fetchQuestions()
@@ -31,6 +34,8 @@ export default function AdminPage() {
       const response = await fetch('/api/questions')
       const data = await response.json()
       setQuestions(data)
+      originalOrderRef.current = data.map((q: Question) => q.id)
+      setHasOrderChanges(false)
     } catch (error) {
       console.error('Error fetching questions:', error)
     } finally {
@@ -56,24 +61,53 @@ export default function AdminPage() {
     try {
       await fetch(`/api/questions/${id}`, { method: 'DELETE' })
       setQuestions(questions.filter(q => q.id !== id))
+      originalOrderRef.current = originalOrderRef.current.filter(qId => qId !== id)
     } catch (error) {
       console.error('Error deleting question:', error)
     }
   }
 
-  const handleMoveQuestion = async (id: number, direction: 'up' | 'down') => {
+  const handleMoveQuestion = (id: number, direction: 'up' | 'down') => {
+    const currentIndex = questions.findIndex(q => q.id === id)
+    if (currentIndex === -1) return
+
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+    if (newIndex < 0 || newIndex >= questions.length) return
+
+    const newQuestions = [...questions]
+    const [movedQuestion] = newQuestions.splice(currentIndex, 1)
+    newQuestions.splice(newIndex, 0, movedQuestion)
+    
+    setQuestions(newQuestions)
+    
+    // Check if order changed from original
+    const currentOrder = newQuestions.map(q => q.id)
+    const hasChanges = !currentOrder.every((id, idx) => id === originalOrderRef.current[idx])
+    setHasOrderChanges(hasChanges)
+  }
+
+  const handleSaveOrder = async () => {
+    setSavingOrder(true)
     try {
-      const response = await fetch('/api/questions/reorder', {
+      const orderData = questions.map((q, index) => ({
+        id: q.id,
+        order_index: index
+      }))
+      
+      const response = await fetch('/api/questions/reorder-batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, direction })
+        body: JSON.stringify({ questions: orderData })
       })
       
       if (response.ok) {
-        fetchQuestions()
+        originalOrderRef.current = questions.map(q => q.id)
+        setHasOrderChanges(false)
       }
     } catch (error) {
-      console.error('Error moving question:', error)
+      console.error('Error saving order:', error)
+    } finally {
+      setSavingOrder(false)
     }
   }
 
@@ -224,6 +258,21 @@ export default function AdminPage() {
         onSubmit={() => fetchQuestions()}
         editingQuestion={editingQuestion}
       />
+
+      {/* Save Order Button - Fixed Position */}
+      {hasOrderChanges && (
+        <div className="fixed top-6 right-6 z-50">
+          <Button
+            onClick={handleSaveOrder}
+            disabled={savingOrder}
+            className="bg-green-600 hover:bg-green-700 text-white shadow-lg cursor-pointer"
+            size="lg"
+          >
+            <Save size={20} className="mr-2" />
+            {savingOrder ? 'Сохранение...' : 'Сохранить порядок'}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
