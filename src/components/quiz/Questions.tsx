@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar, Clock } from 'lucide-react'
 import { TimePicker } from './TimePicker'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
@@ -61,11 +61,11 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
             >
               <div className="space-y-3 pl-12">
                 {question.options.map((option) => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option} id={`${question.id}-${option}`} />
+                  <div key={option} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-md p-2 -ml-2 transition-colors">
+                    <RadioGroupItem value={option} id={`${question.id}-${option}`} className="cursor-pointer" />
                     <label
                       htmlFor={`${question.id}-${option}`}
-                      className="text-gray-700 cursor-pointer"
+                      className="text-gray-700 cursor-pointer flex-1"
                     >
                       {option}
                     </label>
@@ -79,9 +79,10 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
           {question.question_type === 'multiple' && (
             <div className="space-y-3 pl-12">
               {question.options.map((option) => (
-                <div key={option} className="flex items-center space-x-2">
+                <div key={option} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-md p-2 -ml-2 transition-colors">
                   <Checkbox
                     id={`${question.id}-${option}`}
+                    className="cursor-pointer"
                     checked={(answers[question.id] || []).includes(option)}
                     onCheckedChange={(checked) => {
                       const currentAnswers = answers[question.id] || []
@@ -97,7 +98,7 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                   />
                   <label
                     htmlFor={`${question.id}-${option}`}
-                    className="text-gray-700 cursor-pointer"
+                    className="text-gray-700 cursor-pointer flex-1"
                   >
                     {option}
                   </label>
@@ -161,26 +162,35 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
           {/* Date Picker */}
           {question.question_type === 'date' && (
             <div className="pl-12">
-              <Popover>
-                <PopoverTrigger asChild>
+              <Dialog>
+                <DialogTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full max-w-md justify-start text-left"
+                    className="w-full max-w-md justify-start text-left cursor-pointer"
                   >
                     <Calendar className="mr-2 h-4 w-4" />
                     {answers[question.id]
-                      ? format(new Date(answers[question.id]), 'PPP', { locale: ru })
+                      ? format(new Date(answers[question.id]), 'd MMMM yyyy', { locale: ru })
                       : 'Выберите дату'}
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <CalendarComponent
-                    mode="single"
-                    selected={answers[question.id] ? new Date(answers[question.id]) : undefined}
-                    onSelect={(date) => onAnswerChange(question.id, date?.toISOString())}
-                  />
-                </PopoverContent>
-              </Popover>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Выберите дату</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex justify-center py-4">
+                    <CalendarComponent
+                      mode="single"
+                      locale={ru}
+                      selected={answers[question.id] ? new Date(answers[question.id]) : undefined}
+                      onSelect={(date) => {
+                        onAnswerChange(question.id, date?.toISOString())
+                      }}
+                      className="rounded-md border"
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
 
@@ -193,7 +203,7 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                 className="w-full max-w-md justify-start"
               >
                 <Clock className="mr-2 h-4 w-4" />
-                {answers[question.id] || 'Выберите время'}
+                {answers[question.id] || 'Выберите вре��я'}
               </Button>
               {timePickerOpen === question.id && (
                 <TimePicker
