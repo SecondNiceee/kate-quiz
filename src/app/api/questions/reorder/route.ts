@@ -33,12 +33,17 @@ export async function POST(request: Request) {
     const currentQuestion = questions[currentIndex]
     const swapQuestion = questions[swapIndex]
 
-    // Swap order_index values
+    // Use actual array positions as new order_index values (not the potentially duplicate order_index from DB)
+    // This ensures unique values even if all questions started with order_index = 0
+    const newCurrentOrder = swapIndex
+    const newSwapOrder = currentIndex
+
+    // Update both questions with their new positions
     await sql`
-      UPDATE quiz_questions SET order_index = ${swapQuestion.order_index} WHERE id = ${currentQuestion.id}
+      UPDATE quiz_questions SET order_index = ${newCurrentOrder} WHERE id = ${currentQuestion.id}
     `
     await sql`
-      UPDATE quiz_questions SET order_index = ${currentQuestion.order_index} WHERE id = ${swapQuestion.id}
+      UPDATE quiz_questions SET order_index = ${newSwapOrder} WHERE id = ${swapQuestion.id}
     `
 
     return NextResponse.json({ success: true })

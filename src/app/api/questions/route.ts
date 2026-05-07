@@ -16,11 +16,17 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { question_text, question_type, options = [], units = [], order_index = 0, is_required = true } = body
+    const { question_text, question_type, options = [], units = [], is_required = true } = body
+
+    // Get the max order_index to place new question at the end
+    const maxOrderResult = await sql`
+      SELECT COALESCE(MAX(order_index), -1) as max_order FROM quiz_questions
+    `
+    const newOrderIndex = (maxOrderResult[0]?.max_order ?? -1) + 1
 
     const result = await sql`
       INSERT INTO quiz_questions (question_text, question_type, options, units, order_index, is_required)
-      VALUES (${question_text}, ${question_type}, ${JSON.stringify(options)}, ${JSON.stringify(units)}, ${order_index}, ${is_required})
+      VALUES (${question_text}, ${question_type}, ${JSON.stringify(options)}, ${JSON.stringify(units)}, ${newOrderIndex}, ${is_required})
       RETURNING *
     `
     
