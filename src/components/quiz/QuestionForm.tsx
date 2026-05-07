@@ -10,18 +10,39 @@ import { Plus, X } from 'lucide-react'
 
 type QuestionType = 'single' | 'multiple' | 'text' | 'number' | 'date' | 'time'
 
+interface Question {
+  id: number
+  question_text: string
+  question_type: string
+  options: string[]
+  units: string[]
+  is_required: boolean
+}
+
 interface QuestionFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (question: any) => void
+  editingQuestion?: Question | null
 }
 
-export function QuestionForm({ open, onOpenChange, onSubmit }: QuestionFormProps) {
+export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: QuestionFormProps) {
   const [questionText, setQuestionText] = useState('')
   const [questionType, setQuestionType] = useState<QuestionType>('single')
   const [options, setOptions] = useState<string[]>(['', ''])
   const [units, setUnits] = useState<string[]>([])
   const [isRequired, setIsRequired] = useState(true)
+
+  // Populate form when editing
+  useState(() => {
+    if (editingQuestion) {
+      setQuestionText(editingQuestion.question_text)
+      setQuestionType(editingQuestion.question_type as QuestionType)
+      setOptions(editingQuestion.options?.length > 0 ? editingQuestion.options : ['', ''])
+      setUnits(editingQuestion.units || [])
+      setIsRequired(editingQuestion.is_required)
+    }
+  })
 
   const handleAddOption = () => {
     setOptions([...options, ''])
