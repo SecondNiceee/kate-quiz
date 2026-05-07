@@ -19,6 +19,7 @@ type Question = {
 export default function AdminPage() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -34,6 +35,18 @@ export default function AdminPage() {
       console.error('Error fetching questions:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleEditQuestion = (question: Question) => {
+    setEditingQuestion(question)
+    setIsFormOpen(true)
+  }
+
+  const handleFormClose = (open: boolean) => {
+    setIsFormOpen(open)
+    if (!open) {
+      setEditingQuestion(null)
     }
   }
 
@@ -152,6 +165,7 @@ export default function AdminPage() {
                       size="sm"
                       variant="ghost"
                       className="text-blue-600 hover:bg-blue-50"
+                      onClick={() => handleEditQuestion(question)}
                     >
                       <Edit2 size={18} />
                     </Button>
@@ -174,8 +188,9 @@ export default function AdminPage() {
       {/* Question Form Dialog */}
       <QuestionForm
         open={isFormOpen}
-        onOpenChange={setIsFormOpen}
+        onOpenChange={handleFormClose}
         onSubmit={() => fetchQuestions()}
+        editingQuestion={editingQuestion}
       />
     </div>
   )

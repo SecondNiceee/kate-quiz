@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -10,18 +10,48 @@ import { Plus, X } from 'lucide-react'
 
 type QuestionType = 'single' | 'multiple' | 'text' | 'number' | 'date' | 'time'
 
+type Question = {
+  id: number
+  question_text: string
+  question_type: string
+  options: string[]
+  units: string[]
+  is_required: boolean
+}
+
 interface QuestionFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (question: any) => void
+  editingQuestion?: Question | null
 }
 
-export function QuestionForm({ open, onOpenChange, onSubmit }: QuestionFormProps) {
+export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: QuestionFormProps) {
   const [questionText, setQuestionText] = useState('')
   const [questionType, setQuestionType] = useState<QuestionType>('single')
   const [options, setOptions] = useState<string[]>(['', ''])
   const [units, setUnits] = useState<string[]>([])
   const [isRequired, setIsRequired] = useState(true)
+
+  useEffect(() => {
+    if (editingQuestion) {
+      setQuestionText(editingQuestion.question_text)
+      setQuestionType(editingQuestion.question_type as QuestionType)
+      setOptions(editingQuestion.options.length > 0 ? editingQuestion.options : ['', ''])
+      setUnits(editingQuestion.units || [])
+      setIsRequired(editingQuestion.is_required)
+    } else {
+      resetForm()
+    }
+  }, [editingQuestion])
+
+  const resetForm = () => {
+    setQuestionText('')
+    setQuestionType('single')
+    setOptions(['', ''])
+    setUnits([])
+    setIsRequired(true)
+  }
 
   const handleAddOption = () => {
     setOptions([...options, ''])
@@ -71,27 +101,25 @@ export function QuestionForm({ open, onOpenChange, onSubmit }: QuestionFormProps
     }
 
     try {
-      const response = await fetch('/api/questions', {
-        method: 'POST',
+      const url = editingQuestion ? `/api/questions/${editingQuestion.id}` : '/api/questions'
+      const method = editingQuestion ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(questionData)
       })
 
       if (response.ok) {
-        // Reset form
-        setQuestionText('')
-        setQuestionType('single')
-        setOptions(['', ''])
-        setUnits([])
-        setIsRequired(true)
+        resetForm()
         onOpenChange(false)
         onSubmit(questionData)
       } else {
-        alert('Ошибка при создании вопроса')
+        alert(editingQuestion ? 'Ошибка при обновлении вопроса' : 'Ошибка при создании вопроса')
       }
     } catch (error) {
-      console.error('Error creating question:', error)
-      alert('Ошибка при создании вопроса')
+      console.error('Error saving question:', error)
+      alert(editingQuestion ? 'Ошибка при обновлении вопроса' : 'Ошибка при создании вопроса')
     }
   }
 
@@ -99,7 +127,7 @@ export function QuestionForm({ open, onOpenChange, onSubmit }: QuestionFormProps
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Добавить новый вопрос</DialogTitle>
+          <DialogTitle>{editingQuestion ? 'Редактировать вопрос' : 'Добавить новый вопрос'}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -231,7 +259,7 @@ export function QuestionForm({ open, onOpenChange, onSubmit }: QuestionFormProps
               Отмена
             </Button>
             <Button onClick={handleSubmit} className="bg-purple-600 hover:bg-purple-700">
-              Создать вопрос
+              {editingQuestion ? 'Сохранить изменения' : 'Создать вопрос'}
             </Button>
           </div>
         </div>
