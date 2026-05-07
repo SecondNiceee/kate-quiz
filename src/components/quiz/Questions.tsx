@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar, Clock } from 'lucide-react'
 import { TimePicker } from './TimePicker'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
@@ -29,6 +29,8 @@ interface QuestionsProps {
 
 export function Questions({ questions, answers, onAnswerChange }: QuestionsProps) {
   const [timePickerOpen, setTimePickerOpen] = useState<number | null>(null)
+  const [pendingDates, setPendingDates] = useState<Record<number, Date | undefined>>({})
+  const [dateDialogOpen, setDateDialogOpen] = useState<number | null>(null)
 
   if (!questions || questions.length === 0) {
     return (
@@ -162,7 +164,17 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
           {/* Date Picker */}
           {question.question_type === 'date' && (
             <div className="pl-12">
-              <Dialog>
+              <Dialog
+                open={dateDialogOpen === question.id}
+                onOpenChange={(open) => {
+                  if (open) {
+                    setPendingDates(prev => ({ ...prev, [question.id]: answers[question.id] ? new Date(answers[question.id]) : undefined }))
+                    setDateDialogOpen(question.id)
+                  } else {
+                    setDateDialogOpen(null)
+                  }
+                }}
+              >
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
@@ -174,20 +186,35 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                       : 'Выберите дату'}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="sm:max-w-sm">
                   <DialogHeader>
                     <DialogTitle>Выберите дату</DialogTitle>
                   </DialogHeader>
-                  <div className="flex justify-center py-4">
+                  <div className="py-2">
                     <CalendarComponent
                       mode="single"
                       locale={ru}
-                      selected={answers[question.id] ? new Date(answers[question.id]) : undefined}
+                      selected={pendingDates[question.id]}
                       onSelect={(date) => {
-                        onAnswerChange(question.id, date?.toISOString())
+                        setPendingDates(prev => ({ ...prev, [question.id]: date }))
                       }}
-                      className="rounded-md border"
+                      className="rounded-md border w-full"
                     />
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <DialogClose asChild>
+                      <Button variant="outline" className="cursor-pointer">Отмена</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button
+                        className="cursor-pointer"
+                        onClick={() => {
+                          onAnswerChange(question.id, pendingDates[question.id]?.toISOString())
+                        }}
+                      >
+                        Принять
+                      </Button>
+                    </DialogClose>
                   </div>
                 </DialogContent>
               </Dialog>
