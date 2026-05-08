@@ -276,7 +276,7 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                 className="w-full max-w-md justify-start"
               >
                 <Clock className="mr-2 h-4 w-4" />
-                {answers[question.id] || 'Выберите вре��я'}
+                {answers[question.id] || 'Выберите время'}
               </Button>
               {timePickerOpen === question.id && (
                 <TimePicker
