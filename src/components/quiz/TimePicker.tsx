@@ -19,6 +19,20 @@ export function TimePicker({ value = '12:00', onChange, onClose }: TimePickerPro
   const incrementMinutes = () => setMinutes((m) => (m + 1) % 60)
   const decrementMinutes = () => setMinutes((m) => (m - 1 + 60) % 60)
 
+  const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value) || 0
+    if (val >= 0 && val <= 23) {
+      setHours(val)
+    }
+  }
+
+  const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value) || 0
+    if (val >= 0 && val <= 59) {
+      setMinutes(val)
+    }
+  }
+
   const handleConfirm = () => {
     const newTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
     onChange?.(newTime)
