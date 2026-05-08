@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Calendar, Clock } from 'lucide-react'
+import { Calendar, Clock, ChevronDown, Check } from 'lucide-react'
 import { TimePicker } from './TimePicker'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog'
@@ -30,6 +30,18 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
   const [timePickerOpen, setTimePickerOpen] = useState<number | null>(null)
   const [pendingDates, setPendingDates] = useState<Record<number, Date | undefined>>({})
   const [dateDialogOpen, setDateDialogOpen] = useState<number | null>(null)
+  const [unitDropdownOpen, setUnitDropdownOpen] = useState<number | null>(null)
+  const unitDropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (unitDropdownRef.current && !unitDropdownRef.current.contains(e.target as Node)) {
+        setUnitDropdownOpen(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   if (!questions || questions.length === 0) {
     return (
@@ -149,23 +161,47 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                   className="flex-1"
                 />
                 {question.units && question.units.length > 0 && (
-                  <select
-                    value={answers[question.id]?.unit || ''}
-                    onChange={(e) =>
-                      onAnswerChange(question.id, {
-                        value: answers[question.id]?.value || '',
-                        unit: e.target.value
-                      })
-                    }
-                    className="border border-gray-300 rounded-md px-3 py-2 text-gray-700"
-                  >
-                    <option value="">Выберите единицу</option>
-                    {question.units.map((unit) => (
-                      <option key={unit} value={unit}>
-                        {unit}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative" ref={unitDropdownOpen === question.id ? unitDropdownRef : undefined}>
+                    <button
+                      type="button"
+                      onClick={() => setUnitDropdownOpen(unitDropdownOpen === question.id ? null : question.id)}
+                      className="flex items-center justify-between gap-3 border border-gray-300 rounded-md px-3 py-2 text-gray-700 bg-white hover:border-purple-400 focus:outline-none focus:border-purple-500 transition-colors min-w-[120px] cursor-pointer"
+                    >
+                      <span className="text-sm">
+                        {answers[question.id]?.unit || 'Единица'}
+                      </span>
+                      <ChevronDown
+                        size={16}
+                        className={`text-gray-400 flex-shrink-0 transition-transform ${unitDropdownOpen === question.id ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                    {unitDropdownOpen === question.id && (
+                      <div className="absolute top-full mt-1 left-0 z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-full overflow-hidden">
+                        {question.units.map((unit) => {
+                          const isSelected = answers[question.id]?.unit === unit
+                          return (
+                            <button
+                              key={unit}
+                              type="button"
+                              onClick={() => {
+                                onAnswerChange(question.id, {
+                                  value: answers[question.id]?.value || '',
+                                  unit
+                                })
+                                setUnitDropdownOpen(null)
+                              }}
+                              className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left hover:bg-purple-50 transition-colors cursor-pointer ${
+                                isSelected ? 'text-purple-700 font-medium bg-purple-50' : 'text-gray-700'
+                              }`}
+                            >
+                              <span>{unit}</span>
+                              {isSelected && <Check size={14} className="text-purple-600 flex-shrink-0" />}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
