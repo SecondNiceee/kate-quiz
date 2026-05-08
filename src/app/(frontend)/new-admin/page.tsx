@@ -4,7 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { QuestionForm } from '@/components/quiz/QuestionForm'
-import { Plus, Trash2, Edit2, ChevronUp, ChevronDown, Save } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Plus, Trash2, Edit2, ChevronUp, ChevronDown, Save, Settings, Check, X } from 'lucide-react'
+
+type QuizSettings = {
+  title: string
+  description: string
+}
 
 type Question = {
   id: number
@@ -25,9 +31,56 @@ export default function AdminPage() {
   const [savingOrder, setSavingOrder] = useState(false)
   const originalOrderRef = useRef<number[]>([])
 
+  const [settings, setSettings] = useState<QuizSettings>({ title: '', description: '' })
+  const [editingSettings, setEditingSettings] = useState(false)
+  const [settingsDraft, setSettingsDraft] = useState<QuizSettings>({ title: '', description: '' })
+  const [savingSettings, setSavingSettings] = useState(false)
+
   useEffect(() => {
     fetchQuestions()
+    fetchSettings()
   }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch('/api/quiz-settings')
+      const data = await res.json()
+      if (data && data.title) {
+        setSettings(data)
+        setSettingsDraft(data)
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+    }
+  }
+
+  const handleSettingsEdit = () => {
+    setSettingsDraft({ ...settings })
+    setEditingSettings(true)
+  }
+
+  const handleSettingsCancel = () => {
+    setSettingsDraft({ ...settings })
+    setEditingSettings(false)
+  }
+
+  const handleSettingsSave = async () => {
+    setSavingSettings(true)
+    try {
+      const res = await fetch('/api/quiz-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settingsDraft),
+      })
+      const data = await res.json()
+      setSettings(data)
+      setEditingSettings(false)
+    } catch (error) {
+      console.error('Error saving settings:', error)
+    } finally {
+      setSavingSettings(false)
+    }
+  }
 
   const fetchQuestions = async () => {
     try {
@@ -130,6 +183,81 @@ export default function AdminPage() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Админ-панель опросника</h1>
           <p className="text-gray-600">Управление вопросами и ответами</p>
+        </div>
+
+        {/* Quiz Settings */}
+        <div className="mb-8 bg-white rounded-2xl border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Settings size={18} className="text-purple-600" />
+              <h2 className="text-base font-semibold text-gray-900">Настройки опросника</h2>
+            </div>
+            {!editingSettings && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-blue-600 hover:bg-blue-50 cursor-pointer"
+                onClick={handleSettingsEdit}
+              >
+                <Edit2 size={16} className="mr-1" />
+                Изменить
+              </Button>
+            )}
+          </div>
+
+          {editingSettings ? (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Название</label>
+                <Input
+                  value={settingsDraft.title}
+                  onChange={(e) => setSettingsDraft({ ...settingsDraft, title: e.target.value })}
+                  placeholder="Название опросника"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                <textarea
+                  value={settingsDraft.description}
+                  onChange={(e) => setSettingsDraft({ ...settingsDraft, description: e.target.value })}
+                  placeholder="Описание опросника"
+                  rows={3}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  className="bg-purple-600 hover:bg-purple-700 text-white cursor-pointer"
+                  onClick={handleSettingsSave}
+                  disabled={savingSettings}
+                >
+                  <Check size={15} className="mr-1" />
+                  {savingSettings ? 'Сохранение...' : 'Сохранить'}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-gray-600 hover:bg-gray-100 cursor-pointer"
+                  onClick={handleSettingsCancel}
+                >
+                  <X size={15} className="mr-1" />
+                  Отмена
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <div>
+                <span className="text-xs text-gray-500 uppercase tracking-wide">Название</span>
+                <p className="text-gray-900 font-medium mt-0.5">{settings.title || '—'}</p>
+              </div>
+              <div>
+                <span className="text-xs text-gray-500 uppercase tracking-wide">Описание</span>
+                <p className="text-gray-700 text-sm mt-0.5">{settings.description || '—'}</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Add Question Button */}

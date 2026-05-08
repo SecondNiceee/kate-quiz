@@ -14,15 +14,35 @@ type QuestionData = {
   is_required: boolean
 }
 
+type QuizSettings = {
+  title: string
+  description: string
+}
+
 export default function QuizPage() {
   const [questions, setQuestions] = useState<QuestionData[]>([])
   const [answers, setAnswers] = useState<Record<number, any>>({})
   const [loading, setLoading] = useState(true)
   const [submitted, setSubmitted] = useState(false)
+  const [settings, setSettings] = useState<QuizSettings>({
+    title: 'Опросник',
+    description: 'Пожалуйста, ответьте на все вопросы ниже. Ваши ответы помогут нам лучше понять ваши потребности.',
+  })
 
   useEffect(() => {
     fetchQuestions()
+    fetchSettings()
   }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/quiz-settings')
+      const data = await response.json()
+      if (data && data.title) setSettings(data)
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+    }
+  }
 
   const fetchQuestions = async () => {
     try {
@@ -71,10 +91,10 @@ export default function QuizPage() {
         {/* Hero Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Опросник
+            {settings.title}
           </h1>
           <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-            Пожалуйста, ответьте на все вопросы ниже. Ваши ответы помогут нам лучше понять ваши потребности.
+            {settings.description}
           </p>
         </div>
 
