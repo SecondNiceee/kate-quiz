@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -57,24 +56,35 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
 
           {/* Single Choice */}
           {question.question_type === 'single' && (
-            <RadioGroup
-              value={answers[question.id] || ''}
-              onValueChange={(value) => onAnswerChange(question.id, value)}
-            >
-              <div className="space-y-3 pl-12">
-                {question.options.map((option) => (
-                  <div key={option} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-md p-2 -ml-2 transition-colors">
-                    <RadioGroupItem value={option} id={`${question.id}-${option}`} className="cursor-pointer" />
-                    <label
-                      htmlFor={`${question.id}-${option}`}
-                      className="text-gray-700 cursor-pointer flex-1"
-                    >
+            <div className="space-y-2 pl-12">
+              {question.options.map((option) => {
+                const selected = answers[question.id] === option
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => onAnswerChange(question.id, option)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-all cursor-pointer ${
+                      selected
+                        ? 'border-purple-600 bg-purple-50'
+                        : 'border-gray-200 bg-white hover:border-purple-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {/* Custom radio circle */}
+                    <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                      selected ? 'border-purple-600' : 'border-gray-300'
+                    }`}>
+                      {selected && (
+                        <span className="w-2.5 h-2.5 rounded-full bg-purple-600" />
+                      )}
+                    </span>
+                    <span className={`text-sm ${selected ? 'text-purple-900 font-medium' : 'text-gray-700'}`}>
                       {option}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </RadioGroup>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
           )}
 
           {/* Multiple Choice */}
