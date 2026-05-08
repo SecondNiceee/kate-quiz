@@ -24,9 +24,10 @@ interface QuestionsProps {
   questions: QuestionData[]
   answers: Record<number, any>
   onAnswerChange: (questionId: number, value: any) => void
+  errorQuestionIds?: number[]
 }
 
-export function Questions({ questions, answers, onAnswerChange }: QuestionsProps) {
+export function Questions({ questions, answers, onAnswerChange, errorQuestionIds = [] }: QuestionsProps) {
   const [timePickerOpen, setTimePickerOpen] = useState<number | null>(null)
   const [pendingDates, setPendingDates] = useState<Record<number, Date | undefined>>({})
   const [dateDialogOpen, setDateDialogOpen] = useState<number | null>(null)
@@ -52,12 +53,23 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
   }
 
   return (
-    <div className="space-y-8">
-      {questions.map((question, index) => (
-        <div key={question.id} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+    <div className="space-y-6">
+      {questions.map((question, index) => {
+        const hasError = errorQuestionIds.includes(question.id)
+        return (
+        <div 
+          key={question.id} 
+          className={`bg-white rounded-lg p-6 border-2 shadow-sm transition-colors ${
+            hasError 
+              ? 'border-red-400 bg-red-50/30' 
+              : 'border-gray-200'
+          }`}
+        >
           {/* Question Header */}
           <div className="flex items-start gap-4 mb-4">
-            <span className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold flex-shrink-0">
+            <span className={`text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold flex-shrink-0 ${
+              hasError ? 'bg-red-500' : 'bg-emerald-600'
+            }`}>
               {index + 1}
             </span>
             <h3 className="text-lg font-semibold text-gray-900 pt-1">
@@ -78,19 +90,19 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                     onClick={() => onAnswerChange(question.id, option)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-all cursor-pointer ${
                       selected
-                        ? 'border-purple-600 bg-purple-50'
-                        : 'border-gray-200 bg-white hover:border-purple-300 hover:bg-gray-50'
+                        ? 'border-emerald-600 bg-emerald-50'
+                        : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-gray-50'
                     }`}
                   >
                     {/* Custom radio circle */}
                     <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                      selected ? 'border-purple-600' : 'border-gray-300'
+                      selected ? 'border-emerald-600' : 'border-gray-300'
                     }`}>
                       {selected && (
-                        <span className="w-3 h-3 rounded-full bg-purple-600" />
+                        <span className="w-3 h-3 rounded-full bg-emerald-600" />
                       )}
                     </span>
-                    <span className={`text-sm ${selected ? 'text-purple-900 font-medium' : 'text-gray-700'}`}>
+                    <span className={`text-sm ${selected ? 'text-emerald-900 font-medium' : 'text-gray-700'}`}>
                       {option}
                     </span>
                   </button>
@@ -165,7 +177,7 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                     <button
                       type="button"
                       onClick={() => setUnitDropdownOpen(unitDropdownOpen === question.id ? null : question.id)}
-                      className="flex items-center justify-between gap-3 border border-gray-300 rounded-md px-3 py-2 text-gray-700 bg-white hover:border-purple-400 focus:outline-none focus:border-purple-500 transition-colors min-w-[120px] cursor-pointer"
+                      className="flex items-center justify-between gap-3 border border-gray-300 rounded-md px-3 py-2 text-gray-700 bg-white hover:border-emerald-400 focus:outline-none focus:border-emerald-500 transition-colors min-w-[120px] cursor-pointer"
                     >
                       <span className="text-sm">
                         {answers[question.id]?.unit || 'Единица'}
@@ -190,12 +202,12 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                                 })
                                 setUnitDropdownOpen(null)
                               }}
-                              className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left hover:bg-purple-50 transition-colors cursor-pointer ${
-                                isSelected ? 'text-purple-700 font-medium bg-purple-50' : 'text-gray-700'
+                              className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left hover:bg-emerald-50 transition-colors cursor-pointer ${
+                                isSelected ? 'text-emerald-700 font-medium bg-emerald-50' : 'text-gray-700'
                               }`}
                             >
                               <span>{unit}</span>
-                              {isSelected && <Check size={14} className="text-purple-600 flex-shrink-0" />}
+                              {isSelected && <Check size={14} className="text-emerald-600 flex-shrink-0" />}
                             </button>
                           )
                         })}
@@ -288,7 +300,7 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
             </div>
           )}
         </div>
-      ))}
+      )})}
     </div>
   )
 }
