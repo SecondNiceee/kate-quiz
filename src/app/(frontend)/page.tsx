@@ -96,36 +96,36 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-green-50">
-      <div className="max-w-4xl mx-auto px-6 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
+      <div className="max-w-4xl mx-auto px-6 py-16">
         {/* Hero Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-800 mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
             {settings.title}
           </h1>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
             {settings.description}
           </p>
         </div>
 
         {loading ? (
-          <Card className="p-12 text-center shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <Card className="p-12 text-center shadow-xl border border-slate-700 bg-slate-800/50 backdrop-blur-sm">
             <div className="animate-pulse">
-              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-slate-600">Загрузка вопросов...</p>
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-slate-300">Загрузка вопросов...</p>
             </div>
           </Card>
         ) : questions.length === 0 ? (
-          <Card className="p-12 text-center shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Card className="p-12 text-center shadow-xl border border-slate-700 bg-slate-800/50 backdrop-blur-sm">
+            <div className="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
-            <p className="text-slate-600 mb-2 text-lg">Вопросов еще не добавлено</p>
-            <p className="text-sm text-slate-500">
+            <p className="text-slate-200 mb-2 text-lg">Вопросов еще не добавлено</p>
+            <p className="text-sm text-slate-400">
               Перейдите в{' '}
-              <a href="/new-admin" className="text-emerald-600 hover:text-emerald-700 underline underline-offset-2">
+              <a href="/new-admin" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
                 админ-панель
               </a>
               , чтобы добавить вопросы
@@ -145,7 +145,7 @@ export default function QuizPage() {
               <Button
                 onClick={handleSubmit}
                 size="lg"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-3 text-lg shadow-lg shadow-emerald-500/25 transition-all hover:shadow-xl hover:shadow-emerald-500/30"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 text-lg shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30"
               >
                 Отправить ответы
               </Button>
@@ -156,25 +156,25 @@ export default function QuizPage() {
 
       {/* Error Modal */}
       <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-slate-800 border border-slate-700">
           <DialogHeader>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
+              <div className="w-10 h-10 rounded-full bg-red-900/30 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
               </div>
-              <DialogTitle className="text-lg font-semibold text-slate-900">
+              <DialogTitle className="text-lg font-semibold text-slate-50">
                 Не все вопросы заполнены
               </DialogTitle>
             </div>
           </DialogHeader>
           <DialogDescription asChild>
-            <div className="text-slate-600">
+            <div className="text-slate-300">
               <p className="mb-3">Пожалуйста, ответьте на следующие обязательные вопросы:</p>
               <ul className="space-y-2 max-h-48 overflow-y-auto">
                 {missingQuestions.map((question, index) => (
                   <li key={index} className="flex items-start gap-2 text-sm">
-                    <span className="text-red-500 mt-0.5">•</span>
-                    <span className="text-slate-700">{question}</span>
+                    <span className="text-red-400 mt-0.5">•</span>
+                    <span className="text-slate-300">{question}</span>
                   </li>
                 ))}
               </ul>
@@ -183,7 +183,7 @@ export default function QuizPage() {
           <DialogFooter>
             <Button
               onClick={() => setShowErrorModal(false)}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
               Понятно
             </Button>

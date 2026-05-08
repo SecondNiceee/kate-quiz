@@ -47,7 +47,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
   if (!questions || questions.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-600">Пока нет вопросов. Вернитесь позже.</p>
+        <p className="text-slate-400">Пока нет вопросов. Вернитесь позже.</p>
       </div>
     )
   }
@@ -59,22 +59,22 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
         return (
         <div 
           key={question.id} 
-          className={`bg-white rounded-lg p-6 border-2 shadow-sm transition-colors ${
+          className={`bg-slate-800/50 rounded-lg p-6 border-2 shadow-md transition-colors ${
             hasError 
-              ? 'border-red-400 bg-red-50/30' 
-              : 'border-gray-200'
+              ? 'border-red-500 bg-red-950/20' 
+              : 'border-slate-700'
           }`}
         >
           {/* Question Header */}
           <div className="flex items-start gap-4 mb-4">
             <span className={`text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold flex-shrink-0 ${
-              hasError ? 'bg-red-500' : 'bg-emerald-600'
+              hasError ? 'bg-red-600' : 'bg-blue-600'
             }`}>
               {index + 1}
             </span>
-            <h3 className="text-lg font-semibold text-gray-900 pt-1">
+            <h3 className="text-lg font-semibold text-slate-50 pt-1">
               {question.question_text}
-              {question.is_required && <span className="text-red-500 ml-1">*</span>}
+              {question.is_required && <span className="text-red-400 ml-1">*</span>}
             </h3>
           </div>
 
@@ -90,19 +90,19 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                     onClick={() => onAnswerChange(question.id, option)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-all cursor-pointer ${
                       selected
-                        ? 'border-emerald-600 bg-emerald-50'
-                        : 'border-gray-200 bg-white hover:border-emerald-300 hover:bg-gray-50'
+                        ? 'border-blue-600 bg-blue-950/40'
+                        : 'border-slate-700 bg-slate-700/30 hover:border-blue-500 hover:bg-slate-700/50'
                     }`}
                   >
                     {/* Custom radio circle */}
                     <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                      selected ? 'border-emerald-600' : 'border-gray-300'
+                      selected ? 'border-blue-600' : 'border-slate-600'
                     }`}>
                       {selected && (
-                        <span className="w-3 h-3 rounded-full bg-emerald-600" />
+                        <span className="w-3 h-3 rounded-full bg-blue-600" />
                       )}
                     </span>
-                    <span className={`text-sm ${selected ? 'text-emerald-900 font-medium' : 'text-gray-700'}`}>
+                    <span className={`text-sm ${selected ? 'text-blue-100 font-medium' : 'text-slate-300'}`}>
                       {option}
                     </span>
                   </button>
@@ -115,7 +115,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
           {question.question_type === 'multiple' && (
             <div className="space-y-3 pl-12">
               {question.options.map((option) => (
-                <div key={option} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-md p-2 -ml-2 transition-colors">
+                <div key={option} className="flex items-center space-x-2 cursor-pointer hover:bg-slate-700/30 rounded-md p-2 -ml-2 transition-colors">
                   <Checkbox
                     id={`${question.id}-${option}`}
                     className="cursor-pointer"
@@ -134,7 +134,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                   />
                   <label
                     htmlFor={`${question.id}-${option}`}
-                    className="text-gray-700 cursor-pointer flex-1"
+                    className="text-slate-300 cursor-pointer flex-1"
                   >
                     {option}
                   </label>
@@ -151,7 +151,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                 placeholder="Введите ваш ответ"
                 value={answers[question.id] || ''}
                 onChange={(e) => onAnswerChange(question.id, e.target.value)}
-                className="max-w-md"
+                className="max-w-md bg-slate-700 border-slate-600 text-slate-50 placeholder-slate-500"
               />
             </div>
           )}
@@ -170,25 +170,25 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                       unit: answers[question.id]?.unit || ''
                     })
                   }
-                  className="flex-1"
+                  className="flex-1 bg-slate-700 border-slate-600 text-slate-50 placeholder-slate-500"
                 />
                 {question.units && question.units.length > 0 && (
                   <div className="relative" ref={unitDropdownOpen === question.id ? unitDropdownRef : undefined}>
                     <button
                       type="button"
                       onClick={() => setUnitDropdownOpen(unitDropdownOpen === question.id ? null : question.id)}
-                      className="flex items-center justify-between gap-3 border border-gray-300 rounded-md px-3 py-2 text-gray-700 bg-white hover:border-emerald-400 focus:outline-none focus:border-emerald-500 transition-colors min-w-[120px] cursor-pointer"
+                      className="flex items-center justify-between gap-3 border border-slate-600 rounded-md px-3 py-2 text-slate-300 bg-slate-700 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-colors min-w-[120px] cursor-pointer"
                     >
                       <span className="text-sm">
                         {answers[question.id]?.unit || 'Единица'}
                       </span>
                       <ChevronDown
                         size={16}
-                        className={`text-gray-400 flex-shrink-0 transition-transform ${unitDropdownOpen === question.id ? 'rotate-180' : ''}`}
+                        className={`text-slate-500 flex-shrink-0 transition-transform ${unitDropdownOpen === question.id ? 'rotate-180' : ''}`}
                       />
                     </button>
                     {unitDropdownOpen === question.id && (
-                      <div className="absolute top-full mt-1 left-0 z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-full overflow-hidden">
+                      <div className="absolute top-full mt-1 left-0 z-20 bg-slate-800 border border-slate-700 rounded-lg shadow-lg min-w-full overflow-hidden">
                         {question.units.map((unit) => {
                           const isSelected = answers[question.id]?.unit === unit
                           return (
@@ -202,12 +202,12 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                                 })
                                 setUnitDropdownOpen(null)
                               }}
-                              className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left hover:bg-emerald-50 transition-colors cursor-pointer ${
-                                isSelected ? 'text-emerald-700 font-medium bg-emerald-50' : 'text-gray-700'
+                              className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left hover:bg-slate-700/70 transition-colors cursor-pointer ${
+                                isSelected ? 'text-blue-300 font-medium bg-blue-950/40' : 'text-slate-300'
                               }`}
                             >
                               <span>{unit}</span>
-                              {isSelected && <Check size={14} className="text-emerald-600 flex-shrink-0" />}
+                              {isSelected && <Check size={14} className="text-blue-500 flex-shrink-0" />}
                             </button>
                           )
                         })}
@@ -236,7 +236,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full max-w-md justify-start text-left cursor-pointer"
+                    className="w-full max-w-md justify-start text-left cursor-pointer bg-slate-700 border-slate-600 text-slate-300 hover:border-blue-500"
                   >
                     <Calendar className="mr-2 h-4 w-4" />
                     {answers[question.id]
@@ -244,9 +244,9 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                       : 'Выберите дату'}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-sm">
+                <DialogContent className="sm:max-w-sm bg-slate-800 border border-slate-700">
                   <DialogHeader>
-                    <DialogTitle>Выберите дату</DialogTitle>
+                    <DialogTitle className="text-slate-50">Выберите дату</DialogTitle>
                   </DialogHeader>
                   <div className="py-2">
                     <CalendarComponent
@@ -256,16 +256,16 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                       onSelect={(date) => {
                         setPendingDates(prev => ({ ...prev, [question.id]: date }))
                       }}
-                      className="rounded-md border w-full"
+                      className="rounded-md border border-slate-700 w-full"
                     />
                   </div>
                   <div className="flex justify-end gap-2 pt-2">
                     <DialogClose asChild>
-                      <Button variant="outline" className="cursor-pointer">Отмена</Button>
+                      <Button variant="outline" className="cursor-pointer bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600">Отмена</Button>
                     </DialogClose>
                     <DialogClose asChild>
                       <Button
-                        className="cursor-pointer"
+                        className="cursor-pointer bg-blue-600 hover:bg-blue-700"
                         onClick={() => {
                           onAnswerChange(question.id, pendingDates[question.id]?.toISOString())
                         }}
@@ -285,7 +285,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
               <Button
                 variant="outline"
                 onClick={() => setTimePickerOpen(question.id)}
-                className="w-full max-w-md justify-start"
+                className="w-full max-w-md justify-start bg-slate-700 border-slate-600 text-slate-300 hover:border-blue-500"
               >
                 <Clock className="mr-2 h-4 w-4" />
                 {answers[question.id] || 'Выберите время'}
