@@ -75,7 +75,7 @@ export function Questions({ questions, answers, onAnswerChange }: QuestionsProps
                       selected ? 'border-purple-600' : 'border-gray-300'
                     }`}>
                       {selected && (
-                        <span className="w-2.5 h-2.5 rounded-full bg-purple-600" />
+                        <span className="w-3 h-3 rounded-full bg-purple-600" />
                       )}
                     </span>
                     <span className={`text-sm ${selected ? 'text-purple-900 font-medium' : 'text-gray-700'}`}>
