@@ -151,7 +151,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                 placeholder="Введите ваш ответ"
                 value={answers[question.id] || ''}
                 onChange={(e) => onAnswerChange(question.id, e.target.value)}
-                className="max-w-md bg-white border-emerald-400 text-emerald-950 placeholder-emerald-600"
+                className="max-w-md bg-white border-emerald-700 text-emerald-950 placeholder-emerald-600"
               />
             </div>
           )}
@@ -170,14 +170,14 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                       unit: answers[question.id]?.unit || ''
                     })
                   }
-                  className="flex-1 bg-white border-emerald-400 text-emerald-950 placeholder-emerald-600"
+                  className="flex-1 bg-white border-emerald-700 text-emerald-950 placeholder-emerald-600"
                 />
                 {question.units && question.units.length > 0 && (
                   <div className="relative" ref={unitDropdownOpen === question.id ? unitDropdownRef : undefined}>
                     <button
                       type="button"
                       onClick={() => setUnitDropdownOpen(unitDropdownOpen === question.id ? null : question.id)}
-                      className="flex items-center justify-between gap-3 border border-emerald-400 rounded-md px-3 py-2 text-emerald-900 bg-white hover:border-emerald-600 focus:outline-none focus:border-emerald-600 transition-colors min-w-[120px] cursor-pointer"
+                      className="flex items-center justify-between gap-3 border border-emerald-700 rounded-md px-3 py-2 text-emerald-900 bg-white hover:border-emerald-600 focus:outline-none focus:border-emerald-600 transition-colors min-w-[120px] cursor-pointer"
                     >
                       <span className="text-sm">
                         {answers[question.id]?.unit || 'Единица'}
@@ -236,7 +236,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full max-w-md justify-start text-left cursor-pointer bg-white border-emerald-400 text-emerald-900 hover:border-emerald-600"
+                    className="w-full max-w-md justify-start text-left cursor-pointer bg-white border-emerald-700 text-emerald-900 hover:border-emerald-600"
                   >
                     <Calendar className="mr-2 h-4 w-4" />
                     {answers[question.id]
@@ -261,7 +261,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                   </div>
                   <div className="flex justify-end gap-2 pt-2">
                     <DialogClose asChild>
-                      <Button variant="outline" className="cursor-pointer bg-white border-emerald-400 text-emerald-900 hover:bg-emerald-50">Отмена</Button>
+                      <Button variant="outline" className="cursor-pointer bg-white border-emerald-700 text-emerald-900 hover:bg-emerald-50">Отмена</Button>
                     </DialogClose>
                     <DialogClose asChild>
                       <Button
@@ -285,7 +285,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
               <Button
                 variant="outline"
                 onClick={() => setTimePickerOpen(question.id)}
-                className="w-full max-w-md justify-start bg-white border-emerald-400 text-emerald-900 hover:border-emerald-600"
+                className="w-full max-w-md justify-start bg-white border-emerald-700 text-emerald-900 hover:border-emerald-600"
               >
                 <Clock className="mr-2 h-4 w-4" />
                 {answers[question.id] || 'Выберите время'}
