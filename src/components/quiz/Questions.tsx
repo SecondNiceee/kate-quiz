@@ -62,7 +62,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
           className={`bg-white rounded-lg p-6 border-2 shadow-sm transition-colors ${
             hasError 
               ? 'border-red-400 bg-red-50' 
-              : 'border-emerald-300'
+              : 'border-emerald-700'
           }`}
         >
           {/* Question Header */}
