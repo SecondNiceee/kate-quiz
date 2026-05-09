@@ -145,7 +145,7 @@ export default function QuizPage() {
               <Button
                 onClick={handleSubmit}
                 size="lg"
-                className="bg-green-700 hover:bg-green-800 text-white px-10 py-3 text-lg shadow-lg shadow-green-700/25 transition-all hover:shadow-xl hover:shadow-green-700/30"
+                className="bg-green-900 hover:bg-green-950 text-white px-10 py-3 text-lg shadow-lg shadow-green-900/25 transition-all hover:shadow-xl hover:shadow-green-900/30"
               >
                 Отправить ответы
               </Button>
