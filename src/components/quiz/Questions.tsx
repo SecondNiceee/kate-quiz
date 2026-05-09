@@ -59,7 +59,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
         return (
         <div 
           key={question.id} 
-          className={`bg-white rounded-lg p-6 border-2 shadow-sm transition-colors ${
+          className={`bg-white rounded-lg p-6 border-[1px] shadow-sm transition-colors ${
             hasError 
               ? 'border-red-400 bg-red-50' 
               : 'border-emerald-700'
@@ -95,7 +95,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                     }`}
                   >
                     {/* Custom radio circle */}
-                    <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                    <span className={`w-5 h-5 rounded-full border-[1px] flex-shrink-0 flex items-center justify-center ${
                       selected ? 'border-emerald-700' : 'border-emerald-700'
                     }`}>
                       {selected && (

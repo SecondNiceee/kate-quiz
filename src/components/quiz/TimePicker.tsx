@@ -134,7 +134,7 @@ export function TimePicker({ value = '12:00', onChange, onClose }: TimePickerPro
               <ChevronUp size={28} className="text-purple-600" />
             </button>
             <div 
-              className="w-20 h-20 flex items-center justify-center bg-purple-50 rounded-xl border-2 border-purple-200 cursor-text"
+              className="w-20 h-20 flex items-center justify-center bg-purple-50 rounded-xl border-[1px] border-purple-200 cursor-text"
               onClick={handleHoursClick}
             >
               {isEditingHours ? (
@@ -176,7 +176,7 @@ export function TimePicker({ value = '12:00', onChange, onClose }: TimePickerPro
               <ChevronUp size={28} className="text-purple-600" />
             </button>
             <div 
-              className="w-20 h-20 flex items-center justify-center bg-gray-50 rounded-xl border-2 border-gray-200 cursor-text"
+              className="w-20 h-20 flex items-center justify-center bg-gray-50 rounded-xl border-[1px] border-gray-200 cursor-text"
               onClick={handleMinutesClick}
             >
               {isEditingMinutes ? (
