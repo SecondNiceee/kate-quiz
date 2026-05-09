@@ -91,12 +91,12 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-all cursor-pointer ${
                       selected
                         ? 'border-emerald-700 bg-emerald-50'
-                        : 'border-emerald-300 bg-white hover:border-emerald-500 hover:bg-emerald-50'
+                        : 'border-emerald-700 bg-white hover:border-emerald-700 hover:bg-emerald-50'
                     }`}
                   >
                     {/* Custom radio circle */}
                     <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                      selected ? 'border-emerald-700' : 'border-emerald-400'
+                      selected ? 'border-emerald-700' : 'border-emerald-700'
                     }`}>
                       {selected && (
                         <span className="w-3 h-3 rounded-full bg-emerald-700" />
