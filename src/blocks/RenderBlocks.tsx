@@ -7,7 +7,14 @@ import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 
-const blockComponents = {
+type BlockComponents = {
+  content: typeof ContentBlock
+  cta: typeof CallToActionBlock
+  formBlock: typeof FormBlock
+  mediaBlock: typeof MediaBlock
+}
+
+const blockComponents: BlockComponents = {
   content: ContentBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,
@@ -28,7 +35,7 @@ export const RenderBlocks: React.FC<{
           const { blockType } = block
 
           if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+            const Block = blockComponents[blockType as keyof BlockComponents]
 
             if (Block) {
               return (
