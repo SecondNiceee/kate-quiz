@@ -1,8 +1,26 @@
-import { neon } from '@neondatabase/serverless'
+import { Pool } from 'pg'
 
-const sql = neon(process.env.DATABASE_URL!)
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
 
-export { sql }
+// Helper function that mimics the neon() tagged template syntax
+export async function sql<T = Record<string, unknown>>(
+  strings: TemplateStringsArray,
+  ...values: unknown[]
+): Promise<T[]> {
+  // Build the query with $1, $2, etc. placeholders
+  let query = ''
+  strings.forEach((str, i) => {
+    query += str
+    if (i < values.length) {
+      query += `$${i + 1}`
+    }
+  })
+
+  const result = await pool.query(query, values)
+  return result.rows as T[]
+}
 
 export type QuestionType = 'single' | 'multiple' | 'text' | 'number' | 'date' | 'time'
 
