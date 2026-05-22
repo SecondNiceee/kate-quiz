@@ -22,13 +22,10 @@ type QuizSettings = {
   description: string
 }
 
-type QuizClientProps = {
-  initialSettings: QuizSettings
-}
-
-export function QuizClient({ initialSettings }: QuizClientProps) {
+export function QuizClient() {
   const router = useRouter()
   const [questions, setQuestions] = useState<QuestionData[]>([])
+  const [settings, setSettings] = useState<QuizSettings | null>(null)
   const [answers, setAnswers] = useState<Record<number, any>>({})
   const [loading, setLoading] = useState(true)
   const [errorQuestionIds, setErrorQuestionIds] = useState<number[]>([])
@@ -36,14 +33,43 @@ export function QuizClient({ initialSettings }: QuizClientProps) {
   const [missingQuestions, setMissingQuestions] = useState<string[]>([])
 
   useEffect(() => {
-    fetchQuestions()
+    // Fetch settings and questions in parallel
+    Promise.all([
+      fetchSettings(),
+      fetchQuestions()
+    ]).finally(() => {
+      setLoading(false)
+    })
   }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/quiz-settings')
+      const data = await response.json()
+      if (data && data.title) {
+        setSettings({
+          title: data.title,
+          description: data.description || ''
+        })
+      } else {
+        setSettings({
+          title: 'Опросник',
+          description: 'Пожалуйста, ответьте на все вопросы ниже. Ваши ответы помогут нам лучше понять ваши потребности.'
+        })
+      }
+    } catch (error) {
+      console.error('[v0] Error fetching settings:', error)
+      setSettings({
+        title: 'Опросник',
+        description: 'Пожалуйста, ответьте на все вопросы ниже. Ваши ответы помогут нам лучше понять ваши потребности.'
+      })
+    }
+  }
 
   const fetchQuestions = async () => {
     try {
       const response = await fetch('/api/questions')
       const data = await response.json()
-      console.log('[v0] Questions API response:', data)
       if (Array.isArray(data)) {
         setQuestions(data)
       } else {
@@ -53,8 +79,6 @@ export function QuizClient({ initialSettings }: QuizClientProps) {
     } catch (error) {
       console.error('[v0] Error fetching questions:', error)
       setQuestions([])
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -91,27 +115,36 @@ export function QuizClient({ initialSettings }: QuizClientProps) {
     router.push('/congradulation')
   }
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-4xl mx-auto px-6 py-16">
-        {/* Hero Header - rendered immediately with server data */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-emerald-950 mb-4 tracking-tight">
-            {initialSettings.title}
-          </h1>
-          <p className="text-lg md:text-xl text-emerald-900 max-w-2xl mx-auto leading-relaxed">
-            {initialSettings.description}
-          </p>
-        </div>
-
-        {loading ? (
+  // Show loading state until both settings and questions are loaded
+  if (loading || !settings) {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        <div className="max-w-4xl mx-auto px-6 py-16">
           <Card className="p-12 text-center shadow-md border border-emerald-200 bg-white">
             <div className="animate-pulse">
               <div className="w-8 h-8 border-4 border-emerald-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-emerald-900">Загрузка вопросов...</p>
+              <p className="text-emerald-900">Загрузка...</p>
             </div>
           </Card>
-        ) : questions.length === 0 ? (
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        {/* Hero Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold text-emerald-950 mb-4 tracking-tight">
+            {settings.title}
+          </h1>
+          <p className="text-lg md:text-xl text-emerald-900 max-w-2xl mx-auto leading-relaxed">
+            {settings.description}
+          </p>
+        </div>
+
+        {questions.length === 0 ? (
           <Card className="p-12 text-center shadow-md border border-emerald-200 bg-white">
             <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
