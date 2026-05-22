@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Plus, X } from 'lucide-react'
 
-type QuestionType = 'single' | 'multiple' | 'text' | 'number' | 'date' | 'time'
+type QuestionType = 'text' | 'number' | 'select' | 'multiselect' | 'boolean'
 
 type Question = {
   id: number
@@ -28,7 +28,7 @@ interface QuestionFormProps {
 
 export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: QuestionFormProps) {
   const [questionText, setQuestionText] = useState('')
-  const [questionType, setQuestionType] = useState<QuestionType>('single')
+  const [questionType, setQuestionType] = useState<QuestionType>('select')
   const [options, setOptions] = useState<string[]>(['', ''])
   const [units, setUnits] = useState<string[]>([])
   const [isRequired, setIsRequired] = useState(true)
@@ -47,7 +47,7 @@ export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: 
 
   const resetForm = () => {
     setQuestionText('')
-    setQuestionType('single')
+    setQuestionType('select')
     setOptions(['', ''])
     setUnits([])
     setIsRequired(true)
@@ -87,7 +87,7 @@ export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: 
       return
     }
 
-    if ((questionType === 'single' || questionType === 'multiple') && options.some(o => !o.trim())) {
+    if ((questionType === 'select' || questionType === 'multiselect') && options.some(o => !o.trim())) {
       alert('Заполните все варианты ответов')
       return
     }
@@ -95,7 +95,7 @@ export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: 
     const questionData = {
       question_text: questionText,
       question_type: questionType,
-      options: (questionType === 'single' || questionType === 'multiple') ? options.filter(o => o.trim()) : [],
+      options: (questionType === 'select' || questionType === 'multiselect') ? options.filter(o => o.trim()) : [],
       units: (questionType === 'number') ? units.filter(u => u.trim()) : [],
       is_required: isRequired
     }
@@ -147,18 +147,17 @@ export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: 
             <label className="block text-sm font-medium mb-3">Тип вопроса</label>
             <RadioGroup value={questionType} onValueChange={(value) => {
               setQuestionType(value as QuestionType)
-              if (value === 'text' || value === 'date' || value === 'time') {
+              if (value === 'text' || value === 'boolean') {
                 setOptions([])
               }
             }}>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { value: 'single', label: 'Одиночный выбор' },
-                  { value: 'multiple', label: 'Множественный выбор' },
+                  { value: 'select', label: 'Одиночный выбор' },
+                  { value: 'multiselect', label: 'Множественный выбор' },
                   { value: 'text', label: 'Текстовый ответ' },
                   { value: 'number', label: 'Числовой ответ' },
-                  { value: 'date', label: 'Дата' },
-                  { value: 'time', label: 'Время' }
+                  { value: 'boolean', label: 'Да/Нет' }
                 ].map((type) => (
                   <div key={type.value} className="flex items-center space-x-2">
                     <RadioGroupItem value={type.value} id={type.value} />
@@ -172,7 +171,7 @@ export function QuestionForm({ open, onOpenChange, onSubmit, editingQuestion }: 
           </div>
 
           {/* Options for single/multiple choice */}
-          {(questionType === 'single' || questionType === 'multiple') && (
+          {(questionType === 'select' || questionType === 'multiselect') && (
             <div>
               <label className="block text-sm font-medium mb-3">Варианты ответов</label>
               <div className="space-y-2">
