@@ -1,8 +1,6 @@
 import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from 'payload'
 
 import { contactForm as contactFormData } from './contact-form'
-import { contact as contactPageData } from './contact-page'
-import { home } from './home'
 import { image1 } from './image-1'
 import { image2 } from './image-2'
 import { imageHero1 } from './image-hero-1'
@@ -10,7 +8,6 @@ import { imageHero1 } from './image-hero-1'
 const collections: CollectionSlug[] = [
   'categories',
   'media',
-  'pages',
   'forms',
   'form-submissions',
 ]
@@ -124,39 +121,13 @@ export const seed = async ({
     data: contactFormData,
   })
 
-  payload.logger.info(`— Seeding pages...`)
-
-  const [_, contactPage] = await Promise.all([
-    payload.create({
-      collection: 'pages',
-      depth: 0,
-      data: home({ heroImage: imageHomeDoc, metaImage: image2Doc }),
-    }),
-    payload.create({
-      collection: 'pages',
-      depth: 0,
-      data: contactPageData({ contactForm: contactForm }),
-    }),
-  ])
-
   payload.logger.info(`— Seeding globals...`)
 
   await Promise.all([
     payload.updateGlobal({
       slug: 'header',
       data: {
-        navItems: [
-          {
-            link: {
-              type: 'reference',
-              label: 'Contact',
-              reference: {
-                relationTo: 'pages',
-                value: contactPage.id,
-              },
-            },
-          },
-        ],
+        navItems: [],
       },
     }),
     payload.updateGlobal({
