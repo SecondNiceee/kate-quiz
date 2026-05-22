@@ -1,4 +1,5 @@
-import { sql } from '@/lib/db'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 import { NextResponse } from 'next/server'
 
 export async function PUT(
@@ -6,28 +7,24 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: idParam } = await params
-    const id = parseInt(idParam)
-    
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
-    }
+    const payload = await getPayload({ config: configPromise })
+    const { id } = await params
 
     const body = await request.json()
     const { question_text, question_type, options, units, is_required } = body
 
-    await sql`
-      UPDATE quiz_questions 
-      SET 
-        question_text = ${question_text},
-        question_type = ${question_type},
-        options = ${JSON.stringify(options)},
-        units = ${JSON.stringify(units)},
-        is_required = ${is_required},
-        updated_at = NOW()
-      WHERE id = ${id}
-    `
-    
+    await payload.update({
+      collection: 'quiz-questions',
+      id,
+      data: {
+        questionText: question_text,
+        questionType: question_type,
+        options,
+        units,
+        isRequired: is_required,
+      },
+    })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error updating question:', error)
@@ -40,15 +37,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: idParam } = await params
-    const id = parseInt(idParam)
-    
-    if (isNaN(id)) {
-      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
-    }
+    const payload = await getPayload({ config: configPromise })
+    const { id } = await params
 
-    await sql`DELETE FROM quiz_questions WHERE id = ${id}`
-    
+    await payload.delete({
+      collection: 'quiz-questions',
+      id,
+    })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting question:', error)

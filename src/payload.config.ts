@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url'
 
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
+import { QuizSettings } from './collections/QuizSettings'
+import { QuizQuestions } from './collections/QuizQuestions'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -78,6 +80,8 @@ export default buildConfig({
     },
     Media,
     Users,
+    QuizSettings,
+    QuizQuestions,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   plugins: [

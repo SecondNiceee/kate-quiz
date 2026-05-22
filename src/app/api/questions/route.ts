@@ -1,11 +1,28 @@
-import { sql, type QuizQuestion } from '@/lib/db'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const questions = await sql`
-      SELECT * FROM quiz_questions ORDER BY order_index ASC, id ASC
-    `
+    const payload = await getPayload({ config: configPromise })
+    
+    const { docs } = await payload.find({
+      collection: 'quiz-questions',
+      sort: 'orderIndex',
+      limit: 1000,
+    })
+
+    // Transform to match expected format
+    const questions = docs.map((doc) => ({
+      id: doc.id,
+      question_text: doc.questionText,
+      question_type: doc.questionType,
+      options: doc.options || [],
+      units: doc.units || [],
+      order_index: doc.orderIndex,
+      is_required: doc.isRequired,
+    }))
+
     return NextResponse.json(questions)
   } catch (error) {
     console.error('Error fetching questions:', error)
@@ -15,22 +32,40 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const payload = await getPayload({ config: configPromise })
     const body = await request.json()
     const { question_text, question_type, options = [], units = [], is_required = true } = body
 
     // Get the max order_index to place new question at the end
-    const maxOrderResult = await sql`
-      SELECT COALESCE(MAX(order_index), -1) as max_order FROM quiz_questions
-    `
-    const newOrderIndex = (maxOrderResult[0]?.max_order ?? -1) + 1
+    const { docs } = await payload.find({
+      collection: 'quiz-questions',
+      sort: '-orderIndex',
+      limit: 1,
+    })
 
-    const result = await sql`
-      INSERT INTO quiz_questions (question_text, question_type, options, units, order_index, is_required)
-      VALUES (${question_text}, ${question_type}, ${JSON.stringify(options)}, ${JSON.stringify(units)}, ${newOrderIndex}, ${is_required})
-      RETURNING *
-    `
-    
-    return NextResponse.json(result[0])
+    const newOrderIndex = docs.length > 0 ? (docs[0].orderIndex || 0) + 1 : 0
+
+    const result = await payload.create({
+      collection: 'quiz-questions',
+      data: {
+        questionText: question_text,
+        questionType: question_type,
+        options,
+        units,
+        orderIndex: newOrderIndex,
+        isRequired: is_required,
+      },
+    })
+
+    return NextResponse.json({
+      id: result.id,
+      question_text: result.questionText,
+      question_type: result.questionType,
+      options: result.options,
+      units: result.units,
+      order_index: result.orderIndex,
+      is_required: result.isRequired,
+    })
   } catch (error) {
     console.error('Error creating question:', error)
     return NextResponse.json({ error: 'Failed to create question' }, { status: 500 })
@@ -39,23 +74,32 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const payload = await getPayload({ config: configPromise })
     const body = await request.json()
     const { id, question_text, question_type, options = [], units = [], order_index, is_required } = body
 
-    const result = await sql`
-      UPDATE quiz_questions 
-      SET question_text = ${question_text}, 
-          question_type = ${question_type}, 
-          options = ${JSON.stringify(options)}, 
-          units = ${JSON.stringify(units)},
-          order_index = ${order_index},
-          is_required = ${is_required},
-          updated_at = NOW()
-      WHERE id = ${id}
-      RETURNING *
-    `
-    
-    return NextResponse.json(result[0])
+    const result = await payload.update({
+      collection: 'quiz-questions',
+      id,
+      data: {
+        questionText: question_text,
+        questionType: question_type,
+        options,
+        units,
+        orderIndex: order_index,
+        isRequired: is_required,
+      },
+    })
+
+    return NextResponse.json({
+      id: result.id,
+      question_text: result.questionText,
+      question_type: result.questionType,
+      options: result.options,
+      units: result.units,
+      order_index: result.orderIndex,
+      is_required: result.isRequired,
+    })
   } catch (error) {
     console.error('Error updating question:', error)
     return NextResponse.json({ error: 'Failed to update question' }, { status: 500 })
@@ -64,15 +108,19 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    const payload = await getPayload({ config: configPromise })
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 })
     }
 
-    await sql`DELETE FROM quiz_questions WHERE id = ${parseInt(id)}`
-    
+    await payload.delete({
+      collection: 'quiz-questions',
+      id,
+    })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting question:', error)
