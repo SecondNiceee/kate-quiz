@@ -100,7 +100,7 @@ export default function QuizPage() {
       <div className="max-w-4xl mx-auto px-6 py-16">
         {/* Hero Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold text-emerald-950 mb-4 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-emerald-950 mb-4 tracking-tight">
             {settings.title}
           </h1>
           <p className="text-lg md:text-xl text-emerald-900 max-w-2xl mx-auto leading-relaxed">
@@ -145,7 +145,7 @@ export default function QuizPage() {
               <Button
                 onClick={handleSubmit}
                 size="lg"
-                className="bg-emerald-950 hover:bg-black text-white px-10 py-3 text-lg shadow-lg shadow-emerald-950/40 transition-all hover:shadow-xl hover:shadow-black/40"
+                className="bg-emerald-950 hover:bg-black text-white px-10 py-3 text-lg transition-all"
               >
                 Отправить ответы
               </Button>
