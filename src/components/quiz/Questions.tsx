@@ -79,7 +79,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
           </div>
 
           {/* Single Choice */}
-          {question.question_type === 'single' && (
+          {question.question_type === 'select' && (
             <div className="space-y-2 pl-12">
               {question.options.map((option) => {
                 const selected = answers[question.id] === option
@@ -112,7 +112,7 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
           )}
 
           {/* Multiple Choice */}
-          {question.question_type === 'multiple' && (
+          {question.question_type === 'multiselect' && (
             <div className="space-y-3 pl-12">
               {question.options.map((option) => (
                 <div key={option} className="flex items-center space-x-2 cursor-pointer hover:bg-emerald-50 rounded-md p-2 -ml-2 transition-colors">
@@ -297,6 +297,39 @@ export function Questions({ questions, answers, onAnswerChange, errorQuestionIds
                   onClose={() => setTimePickerOpen(null)}
                 />
               )}
+            </div>
+          )}
+
+          {/* Boolean (Yes/No) */}
+          {question.question_type === 'boolean' && (
+            <div className="space-y-2 pl-12">
+              {['Да', 'Нет'].map((option) => {
+                const value = option === 'Да'
+                const selected = answers[question.id] === value
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => onAnswerChange(question.id, value)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-all cursor-pointer ${
+                      selected
+                        ? 'border-emerald-700 bg-emerald-50'
+                        : 'border-emerald-700 bg-white hover:border-emerald-700 hover:bg-emerald-50'
+                    }`}
+                  >
+                    <span className={`w-5 h-5 rounded-full border-[1px] flex-shrink-0 flex items-center justify-center ${
+                      selected ? 'border-emerald-700' : 'border-emerald-700'
+                    }`}>
+                      {selected && (
+                        <span className="w-3 h-3 rounded-full bg-emerald-700" />
+                      )}
+                    </span>
+                    <span className={`text-sm ${selected ? 'text-emerald-950 font-medium' : 'text-emerald-900'}`}>
+                      {option}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>

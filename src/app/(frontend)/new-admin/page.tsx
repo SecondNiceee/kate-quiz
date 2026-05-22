@@ -175,12 +175,11 @@ export default function AdminPage() {
 
   const getQuestionTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
-      'single': 'Одиночный выбор',
-      'multiple': 'Множественный выбор',
+      'select': 'Одиночный выбор',
+      'multiselect': 'Множественный выбор',
       'text': 'Текстовый ответ',
       'number': 'Числовой ответ',
-      'date': 'Дата',
-      'time': 'Время'
+      'boolean': 'Да/Нет'
     }
     return labels[type] || type
   }
