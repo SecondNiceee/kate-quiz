@@ -1,6 +1,6 @@
 'use client'
 
-import { CheckCircle } from 'lucide-react'
+import { Check } from 'lucide-react'
 
 export default function CongradulationPage() {
   return (
@@ -8,8 +8,8 @@ export default function CongradulationPage() {
       <div className="max-w-lg w-full text-center">
         {/* Success Icon */}
         <div className="mb-8">
-          <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle className="w-14 h-14 text-emerald-600" />
+          <div className="w-24 h-24 bg-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <Check className="w-14 h-14 text-white stroke-[3]" />
           </div>
         </div>
 
