@@ -4,7 +4,6 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
-import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
@@ -78,7 +77,6 @@ export default buildConfig({
       ],
     },
     Media,
-    Categories,
     Users,
   ],
   cors: [getServerSideURL()].filter(Boolean),

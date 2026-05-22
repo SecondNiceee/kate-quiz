@@ -6,15 +6,12 @@ import { image2 } from './image-2'
 import { imageHero1 } from './image-hero-1'
 
 const collections: CollectionSlug[] = [
-  'categories',
   'media',
   'forms',
   'form-submissions',
 ]
 
 const globals: GlobalSlug[] = ['header', 'footer']
-
-const categories = ['Technology', 'News', 'Finance', 'Design', 'Software', 'Engineering']
 
 export const seed = async ({
   payload,
@@ -102,15 +99,6 @@ export const seed = async ({
       data: imageHero1,
       file: hero1Buffer,
     }),
-    categories.map((category) =>
-      payload.create({
-        collection: 'categories',
-        data: {
-          title: category,
-          slug: category,
-        },
-      }),
-    ),
   ])
 
   payload.logger.info(`— Seeding contact form...`)
