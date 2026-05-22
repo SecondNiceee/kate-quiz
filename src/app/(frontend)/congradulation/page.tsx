@@ -19,7 +19,7 @@ export default function CongradulationPage() {
         </h1>
 
         {/* Thank you message */}
-        <p className="text-lg text-emerald-700 font-medium mb-10">
+        <p className="text-2xl md:text-3xl text-emerald-700 font-medium mb-10">
           Спасибо за ваше участие
         </p>
       </div>
