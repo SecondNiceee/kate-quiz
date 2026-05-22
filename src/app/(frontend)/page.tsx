@@ -54,9 +54,16 @@ export default function QuizPage() {
     try {
       const response = await fetch('/api/questions')
       const data = await response.json()
-      setQuestions(data)
+      console.log('[v0] Questions API response:', data)
+      if (Array.isArray(data)) {
+        setQuestions(data)
+      } else {
+        console.error('[v0] Questions API returned non-array:', data)
+        setQuestions([])
+      }
     } catch (error) {
-      console.error('Error fetching questions:', error)
+      console.error('[v0] Error fetching questions:', error)
+      setQuestions([])
     } finally {
       setLoading(false)
     }

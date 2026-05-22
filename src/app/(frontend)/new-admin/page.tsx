@@ -86,11 +86,20 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/questions')
       const data = await response.json()
-      setQuestions(data)
-      originalOrderRef.current = data.map((q: Question) => q.id)
+      console.log('[v0] Admin Questions API response:', data)
+      if (Array.isArray(data)) {
+        setQuestions(data)
+        originalOrderRef.current = data.map((q: Question) => q.id)
+      } else {
+        console.error('[v0] Admin Questions API returned non-array:', data)
+        setQuestions([])
+        originalOrderRef.current = []
+      }
       setHasOrderChanges(false)
     } catch (error) {
-      console.error('Error fetching questions:', error)
+      console.error('[v0] Error fetching questions:', error)
+      setQuestions([])
+      originalOrderRef.current = []
     } finally {
       setLoading(false)
     }
