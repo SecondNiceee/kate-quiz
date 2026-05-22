@@ -1,8 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { CheckCircle } from 'lucide-react'
-import Link from 'next/link'
 
 export default function CongradulationPage() {
   return (
@@ -17,29 +15,13 @@ export default function CongradulationPage() {
 
         {/* Title */}
         <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
-          Поздравление!
+          Событие зарегистрировано
         </h1>
-
-        {/* Subtitle */}
-        <p className="text-xl text-slate-600 mb-3">
-          Тест закончен
-        </p>
 
         {/* Thank you message */}
         <p className="text-lg text-emerald-700 font-medium mb-10">
           Спасибо за ваше участие
         </p>
-
-        {/* Back button */}
-        <Link href="/">
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-emerald-600 text-emerald-700 hover:bg-emerald-50 px-8"
-          >
-            Вернуться на главную
-          </Button>
-        </Link>
       </div>
     </div>
   )
