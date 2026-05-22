@@ -4,7 +4,7 @@ import { CheckCircle } from 'lucide-react'
 
 export default function CongradulationPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-green-50 flex items-center justify-center px-6">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-6">
       <div className="max-w-lg w-full text-center">
         {/* Success Icon */}
         <div className="mb-8">
@@ -19,7 +19,7 @@ export default function CongradulationPage() {
         </h1>
 
         {/* Thank you message */}
-        <p className="text-lg text-emerald-700 font-medium mb-10">
+        <p className="text-2xl md:text-3xl text-emerald-700 font-medium mb-10">
           Спасибо за ваше участие
         </p>
       </div>
