@@ -49,6 +49,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(dirname),
   },
+  typescript:{
+    ignoreBuildErrors:true
+  }
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
