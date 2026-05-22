@@ -1,8 +1,10 @@
-import { sql } from '@/lib/db'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
+    const payload = await getPayload({ config: configPromise })
     const body = await request.json()
     const { id, direction } = body
 
@@ -10,14 +12,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid parameters' }, { status: 400 })
     }
 
-    // Get all questions ordered by order_index
-    const questions = await sql`
-      SELECT id, order_index FROM quiz_questions ORDER BY order_index ASC, id ASC
-    `
+    // Get all questions ordered by orderIndex
+    const { docs } = await payload.find({
+      collection: 'quiz-questions',
+      sort: 'orderIndex',
+      limit: 1000,
+    })
 
-    // Find current question index in the sorted array (ensure type match)
-    const currentIndex = questions.findIndex((q) => Number(q.id) === Number(id))
-    
+    // Find current question index in the sorted array
+    const currentIndex = docs.findIndex((q) => String(q.id) === String(id))
+
     if (currentIndex === -1) {
       return NextResponse.json({ error: 'Question not found' }, { status: 404 })
     }
@@ -26,25 +30,25 @@ export async function POST(request: Request) {
     const swapIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
 
     // Check boundaries
-    if (swapIndex < 0 || swapIndex >= questions.length) {
+    if (swapIndex < 0 || swapIndex >= docs.length) {
       return NextResponse.json({ error: 'Cannot move further' }, { status: 400 })
     }
 
-    const currentQuestion = questions[currentIndex]
-    const swapQuestion = questions[swapIndex]
+    const currentQuestion = docs[currentIndex]
+    const swapQuestion = docs[swapIndex]
 
-    // Use actual array positions as new order_index values (not the potentially duplicate order_index from DB)
-    // This ensures unique values even if all questions started with order_index = 0
-    const newCurrentOrder = swapIndex
-    const newSwapOrder = currentIndex
+    // Swap order indices
+    await payload.update({
+      collection: 'quiz-questions',
+      id: currentQuestion.id,
+      data: { orderIndex: swapIndex },
+    })
 
-    // Update both questions with their new positions
-    await sql`
-      UPDATE quiz_questions SET order_index = ${newCurrentOrder} WHERE id = ${currentQuestion.id}
-    `
-    await sql`
-      UPDATE quiz_questions SET order_index = ${newSwapOrder} WHERE id = ${swapQuestion.id}
-    `
+    await payload.update({
+      collection: 'quiz-questions',
+      id: swapQuestion.id,
+      data: { orderIndex: currentIndex },
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {
