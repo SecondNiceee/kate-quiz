@@ -112,7 +112,7 @@ export function QuizClient() {
     }
 
     // Navigate to congratulations page
-    router.push('/congradulation')
+    router.push('/congratulation')
   }
 
   // Show loading state until both settings and questions are loaded
