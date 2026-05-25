@@ -286,14 +286,14 @@ export default function AdminPage() {
             <p className="text-gray-600">Загрузка...</p>
           </div>
         ) : questions.length === 0 ? (
-          <Card className="p-12 text-center">
+          <Card className="p-12 text-center bg-white text-gray-900">
             <p className="text-gray-600 mb-4">Вопросов еще не добавлено</p>
             <p className="text-sm text-gray-500">Нажмите кнопку выше, чтобы создать первый вопрос</p>
           </Card>
         ) : (
           <div className="space-y-4">
             {questions.map((question, index) => (
-              <Card key={question.id} className="p-6">
+              <Card key={question.id} className="p-6 bg-white text-gray-900">
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
