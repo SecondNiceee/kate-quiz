@@ -1,5 +1,84 @@
 # Payload Website Template
 
+## Быстрый старт (развёртывание с нуля)
+
+Проект поднимается в 4 шага. Порядок важен.
+
+### 1. Переменные окружения
+
+Скопируйте пример и заполните значения:
+
+```bash
+cp .env.example .env
+```
+
+Обязательные переменные в `.env`:
+
+| Переменная | Описание |
+| --- | --- |
+| `POSTGRES_URL` | Строка подключения к PostgreSQL, например `postgresql://user:pass@host:5432/dbname`. Именно в эту базу заливается дамп `start.sql`. |
+| `PAYLOAD_SECRET` | Длинная случайная строка для подписи JWT. Сгенерировать: `openssl rand -base64 32` |
+| `NEXT_PUBLIC_SERVER_URL` | Адрес сайта без слеша на конце, локально — `http://localhost:3000` |
+| `CRON_SECRET` | Случайная строка для защиты cron-эндпоинтов |
+| `PREVIEW_SECRET` | Случайная строка для защиты preview-режима |
+
+Опционально: `BLOB_READ_WRITE_TOKEN` — если используется Vercel Blob Storage для загрузки медиа.
+
+> Если в `POSTGRES_URL` указан `localhost` или `127.0.0.1`, Payload автоматически использует обычный postgres-адаптер вместо Vercel-адаптера.
+
+### 2. Установка зависимостей
+
+```bash
+pnpm i
+```
+
+Это нужно сделать **до** `setup`: скрипт заливки дампа использует пакеты `pg` и `dotenv` из `node_modules`.
+
+### 3. Заливка базы данных из `start.sql`
+
+```bash
+pnpm run setup
+```
+
+Команда читает `POSTGRES_URL` из `.env` и заливает дамп `start.sql` (схема + данные: страницы, настройки квиза, вопросы и т. д.) в базу. Всё выполняется в одной транзакции: при ошибке изменения откатываются, а база остаётся в исходном состоянии.
+
+`psql` устанавливать не нужно — скрипт работает на чистом Node.js.
+
+> Пишите именно `pnpm run setup`. Просто `pnpm setup` не подойдёт: это встроенная команда самого pnpm, и она не запустит скрипт из `package.json`.
+
+**Если база не пустая**, скрипт остановится и ничего не изменит, чтобы не потерять данные. Чтобы перезалить базу с нуля:
+
+```bash
+pnpm run setup:force
+```
+
+> ⚠️ `setup:force` удаляет схему `public` целиком вместе со всеми данными, а затем заливает дамп заново. Используйте только если текущие данные не нужны.
+
+### 4. Сборка и запуск
+
+```bash
+pnpm build && pnpm start
+```
+
+Готово — сайт доступен на `http://localhost:3000`, админка Payload — на `http://localhost:3000/admin`.
+
+Для разработки с hot-reload вместо шага 4 используйте:
+
+```bash
+pnpm dev
+```
+
+### Всё вместе
+
+```bash
+cp .env.example .env      # затем заполнить переменные
+pnpm i
+pnpm run setup
+pnpm build && pnpm start
+```
+
+---
+
 This is the official [Payload Website Template](https://github.com/payloadcms/payload/blob/main/templates/website). Use it to power websites, blogs, or portfolios from small to enterprise. This repo includes a fully-working backend, enterprise-grade admin panel, and a beautifully designed, production-ready website.
 
 You can deploy to Vercel, using Neon and Vercel Blob Storage with one click:
