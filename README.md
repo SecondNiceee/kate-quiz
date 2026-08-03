@@ -19,8 +19,6 @@ cp .env.example .env
 | `POSTGRES_URL` | Строка подключения к PostgreSQL, например `postgresql://user:pass@host:5432/dbname`. Именно в эту базу заливается дамп `start.sql`. |
 | `PAYLOAD_SECRET` | Длинная случайная строка для подписи JWT. Сгенерировать: `openssl rand -base64 32` |
 | `NEXT_PUBLIC_SERVER_URL` | Адрес сайта без слеша на конце, локально — `http://localhost:3000` |
-| `CRON_SECRET` | Случайная строка для защиты cron-эндпоинтов |
-| `PREVIEW_SECRET` | Случайная строка для защиты preview-режима |
 
 Опционально: `BLOB_READ_WRITE_TOKEN` — если используется Vercel Blob Storage для загрузки медиа.
 
@@ -83,7 +81,7 @@ This is the official [Payload Website Template](https://github.com/payloadcms/pa
 
 You can deploy to Vercel, using Neon and Vercel Blob Storage with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?build-command=pnpm%20run%20ci&demo-description=A%20production-ready%20website%20built%20with%20Payload%2C%20the%20only%20Next.js-native%20CMS.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F1EyBgbstPv4d6NMwzldDyY%2F58d07399ce2a2bb51341125fe4f51572%2Fpayloadwebsitetempate_vercel_thumbnail.jpg&demo-title=Payload%20Website%20Starter&demo-url=https%3A%2F%2Fpayload-vercel-website-demo.vercel.app%2F&env=PAYLOAD_SECRET%2CCRON_SECRET%2CPREVIEW_SECRET&from=templates&project-name=Payload%20Website%20Starter&repository-name=payload-website-starter&repository-url=https%3A%2F%2Fgithub.com%2Fpayloadcms%2Fpayload%2Ftree%2Fmain%2Ftemplates%2Fwith-vercel-website&skippable-integrations=1&stores=%255B%257B%2522type%2522%253A%2522integration%2522%252C%2522productSlug%2522%253A%2522neon%2522%252C%2522integrationSlug%2522%253A%2522neon%2522%257D%252C%257B%2522type%2522%253A%2522blob%2522%257D%255D)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?build-command=pnpm%20run%20ci&demo-description=A%20production-ready%20website%20built%20with%20Payload%2C%20the%20only%20Next.js-native%20CMS.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F1EyBgbstPv4d6NMwzldDyY%2F58d07399ce2a2bb51341125fe4f51572%2Fpayloadwebsitetempate_vercel_thumbnail.jpg&demo-title=Payload%20Website%20Starter&demo-url=https%3A%2F%2Fpayload-vercel-website-demo.vercel.app%2F&env=PAYLOAD_SECRET&from=templates&project-name=Payload%20Website%20Starter&repository-name=payload-website-starter&repository-url=https%3A%2F%2Fgithub.com%2Fpayloadcms%2Fpayload%2Ftree%2Fmain%2Ftemplates%2Fwith-vercel-website&skippable-integrations=1&stores=%255B%257B%2522type%2522%253A%2522integration%2522%252C%2522productSlug%2522%253A%2522neon%2522%252C%2522integrationSlug%2522%253A%2522neon%2522%257D%252C%257B%2522type%2522%253A%2522blob%2522%257D%255D)
 
 This template is right for you if you are working on:
 
@@ -128,11 +126,7 @@ The connection variables will automatically be setup for you on Vercel when thes
 
 You will be prompted to add the following secret values to your project. These should be long unguessable strong passwords, you can also use a password manager to generate one for these.
 
-CRON_SECRET - used for running cron on Vercel
-
 PAYLOAD_SECRET - used by Payload to sign secrets like JWT tokens
-
-PREVIEW_SECRET - used by Payload for secured live previews of your content
 
 ## Quick Start - local setup
 
